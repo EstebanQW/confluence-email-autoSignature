@@ -1,124 +1,109 @@
 <!-- Таблица для ввода подписи и кнопок -->
 <table>
-  <tr>
-    <td>
-      <textarea
-        class="js-input"
-        placeholder='Вставь сюда подпись и нажми на кнопку "Создать подпись"'
-        id="inputSignature"
-        name="inputBody"
-        rows="7"
-      ></textarea>
-    </td>
-    <td>
-      <div><b>Текущая подпись:</b></div>
-      <div id="currentSignature">Отсутствует</div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <div class="button-container">
-        <button id="createSignatureButton" onclick="createSignature()">
-          Создать подпись
-        </button>
-        <button id="deleteSignatureButton" onclick="clearSignature()">
-          Удалить подпись
-        </button>
-      </div>
-    </td>
-  </tr>
+    <tr>
+        <td>
+            <textarea class="js-input" placeholder='Вставь сюда подпись и нажми на кнопку "Создать подпись"' id="inputSignature" name="inputBody" rows="7"></textarea>
+        </td>
+        <td>
+            <div><b>Текущая подпись:</b></div>
+            <div id="currentSignature">Отсутствует</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="button-container">
+                <button id="createSignatureButton" onclick="createSignature()">Создать подпись</button>
+                <button id="deleteSignatureButton" onclick="clearSignature()">Удалить подпись</button>
+            </div>
+        </td>
+    </tr>
 </table>
 
 <script>
-  // Функция для создания подписи
-  function createSignature() {
-    const signature = encodeURIComponent(
-      document.querySelector(".js-input").value
-    );
+    // Функция для создания подписи
+    function createSignature() {
+        const signature = encodeURIComponent(document.querySelector(".js-input").value);
 
-    if (!signature) {
-      alert("Пожалуйста, вставьте подпись в текстовое поле перед созданием.");
-      return;
+        if (!signature) {
+            alert("Пожалуйста, вставьте подпись в текстовое поле перед созданием.");
+            return;
+        }
+
+        // Сохраняем подпись в localStorage
+        localStorage.setItem("signatureKey", signature);
+        alert("Подпись успешно создана.");
+        location.reload();
     }
 
-    // Сохраняем подпись в localStorage
-    localStorage.setItem("signatureKey", signature);
-    alert("Подпись успешно создана.");
-    location.reload();
-  }
-
-  // Функция для удаления подписи
-  function clearSignature() {
-    localStorage.removeItem("signatureKey");
-    alert("Подпись удалена.");
-    location.reload();
-  }
-
-  // Функция для применения подписи ко всем кнопкам
-  function addSignatureToButtons(signature) {
-    const buttons = document.querySelectorAll(".rwui_button");
-    for (let i = 0; i < buttons.length; i++) {
-      const button = buttons[i];
-      button.href = button.href + signature;
+    // Функция для удаления подписи
+    function clearSignature() {
+        localStorage.removeItem("signatureKey");
+        alert("Подпись удалена.");
+        location.reload();
     }
-  }
 
-  // Функция для отображения текущей подписи
-  function displayCurrentSignature(signature) {
-    const decodedSignature = decodeURIComponent(signature).replaceAll(
-      "%0A",
-      "\n"
-    );
-    document.querySelector("#currentSignature").textContent = decodedSignature;
-  }
-
-  // Функция для инициализации подписи при загрузке страницы
-  window.addEventListener("load", () => {
-    setTimeout(initializeSignature, 100);
-  });
-
-  // Функция для инициализации подписи из localStorage
-  function initializeSignature() {
-    const savedSignature = localStorage.getItem("signatureKey");
-
-    if (savedSignature) {
-      // Применяем подпись, если она есть
-      addSignatureToButtons(savedSignature);
-      displayCurrentSignature(savedSignature);
+    // Функция для применения подписи ко всем кнопкам
+    function addSignatureToButtons(signature) {
+        const buttons = document.querySelectorAll(".rwui_button");
+        for (let i = 0; i < buttons.length; i++) {
+            const button = buttons[i];
+            button.href = button.href + signature;
+        }
     }
-  }
+
+    // Функция для отображения текущей подписи
+    function displayCurrentSignature(signature) {
+        const decodedSignature = decodeURIComponent(signature).replaceAll("%0A", "\n");
+        document.querySelector("#currentSignature").textContent = decodedSignature;
+    }
+
+    // Функция для инициализации подписи при загрузке страницы
+    window.addEventListener("load", () => {
+        setTimeout(initializeSignature, 100);
+    });
+
+    // Функция для инициализации подписи из localStorage
+    function initializeSignature() {
+        const savedSignature = localStorage.getItem("signatureKey");
+
+        if (savedSignature) {
+            // Применяем подпись, если она есть
+            addSignatureToButtons(savedSignature);
+            displayCurrentSignature(savedSignature);
+        }
+    }
 </script>
 
 <style>
-  /* Стили для поля ввода подписи */
-  .js-input {
-    width: 400px;
-    height: 150px;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    padding: 10px;
-  }
+    /* Стили для поля ввода подписи */
+    .js-input {
+        width: 400px;
+        height: 150px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        padding: 10px;
+    }
 
-  /* Стили для контейнера кнопок, чтобы они были в одной строке */
-  .button-container {
-    display: flex;
-    gap: 10px;
-  }
+    /* Стили для контейнера кнопок, чтобы они были в одной строке */
+    .button-container {
+        display: flex;
+        gap: 10px;
+    }
 
-  /* Стили для кнопок */
-  #createSignatureButton,
-  #deleteSignatureButton {
-    background-color: #4caf50;
-    color: white;
-    font-size: 16px;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-  }
+    /* Стили для кнопок */
+    #createSignatureButton,
+    #deleteSignatureButton {
+        background-color: #4caf50;
+        color: white;
+        font-size: 16px;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
 
-  /* Стили для отображения текущей подписи */
-  #currentSignature {
-    white-space: pre-line;
-    font-weight: bold;
-  }
+    /* Стили для отображения текущей подписи */
+    #currentSignature {
+        white-space: pre-line;
+        font-weight: bold;
+    }
 </style>
